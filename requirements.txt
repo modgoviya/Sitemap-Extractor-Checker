@@ -1,0 +1,2 @@
+beautifulsoup4==4.11.1  # Or any other compatible version
+requests==2.27.1  # Ensure requests is also listed if you're using it

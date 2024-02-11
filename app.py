@@ -87,3 +87,24 @@ st.markdown("""
 
 Elevate your SEO strategy and site management with the Advanced Sitemap URL Extractor – your essential tool for sitemap analysis and optimization.
 """)
+#tracking
+st.markdown("""
+<!-- Default Statcounter code for Advanced Sitemap URL
+Extractor T
+https://advanced-sitemap-url-extractor.streamlit.app/ -->
+<script type="text/javascript">
+var sc_project=12966452; 
+var sc_invisible=1; 
+var sc_security="310e178d"; 
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="Web Analytics"
+href="https://statcounter.com/" target="_blank"><img
+class="statcounter"
+src="https://c.statcounter.com/12966452/0/310e178d/1/"
+alt="Web Analytics"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
+""", unsafe_allow_html=True)

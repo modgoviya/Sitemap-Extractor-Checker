@@ -1,12 +1,10 @@
 import streamlit as st
-import asyncio
-import aiohttp
 from bs4 import BeautifulSoup
 import pandas as pd
+import requests  # Use requests instead of aiohttp
 
 # Set page configuration with an SEO-optimized title and a brief, engaging description
-st.set_page_config(page_title="Advanced Sitemap URL Extractor",
-                   layout="wide")
+st.set_page_config(page_title="Advanced Sitemap URL Extractor", layout="wide")
 
 # Custom CSS for modern styling
 st.markdown("""
@@ -42,37 +40,29 @@ Unlock the full potential of your website with our Advanced **Sitemap URL Extrac
 """)
 sitemap_url = st.text_input('Enter Sitemap URL', '', placeholder="https://example.com/sitemap.xml")
 
-# Async functions for efficient sitemap fetching and parsing
-async def fetch_url(session, url):
-    try:
-        async with session.get(url) as response:
-            return await response.text()
-    except Exception as e:
-        st.error(f"Failed to fetch {url}: {str(e)}")
-        return None
-
-async def process_sitemap(session, url, urls):
-    content = await fetch_url(session, url)
-    if content:
-        soup = BeautifulSoup(content, "xml")
-        if soup.find_all("sitemap"):
-            sitemap_urls = [sitemap.loc.text for sitemap in soup.find_all("sitemap")]
-            for sitemap_url in sitemap_urls:
-                await process_sitemap(session, sitemap_url, urls)
-        elif soup.find_all("url"):
-            urls.extend([url.loc.text for url in soup.find_all("url")])
-
-async def fetch_and_parse_sitemap(sitemap_url):
+def fetch_and_parse_sitemap(sitemap_url):
     urls = []
-    async with aiohttp.ClientSession() as session:
-        await process_sitemap(session, sitemap_url, urls)
-    return urls
+    try:
+        response = requests.get(sitemap_url)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.content, "xml")
+            if soup.find_all("sitemap"):
+                for sitemap in soup.find_all("sitemap"):
+                    sitemap_response = requests.get(sitemap.loc.text)
+                    sitemap_soup = BeautifulSoup(sitemap_response.content, "xml")
+                    urls.extend([url.loc.text for url in sitemap_soup.find_all("url")])
+            elif soup.find_all("url"):
+                urls.extend([url.loc.text for url in soup.find_all("url")])
+        return urls
+    except requests.exceptions.RequestException as e:
+        st.error(f"Failed to fetch or parse the sitemap: {str(e)}")
+        return []
 
 # Extract URLs and display results upon button click
 if st.button('Extract URLs'):
     if sitemap_url:
         with st.spinner('Extracting URLs from sitemap...'):
-            urls = asyncio.run(fetch_and_parse_sitemap(sitemap_url))
+            urls = fetch_and_parse_sitemap(sitemap_url)
             if urls:
                 df = pd.DataFrame(urls, columns=["URL"])
                 st.success(f'Successfully extracted {len(urls)} URLs from standard, nested, and index sitemaps.')
@@ -97,5 +87,3 @@ st.markdown("""
 
 Elevate your SEO strategy and site management with the Advanced Sitemap URL Extractor – your essential tool for sitemap analysis and optimization.
 """)
-
-# This script now provides a fully integrated solution, combining detailed functionalities, user benefits, and practical applications to enhance website management and SEO strategy.

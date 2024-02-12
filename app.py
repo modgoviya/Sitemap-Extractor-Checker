@@ -45,7 +45,9 @@ def fetch_and_parse_sitemap(sitemap_url):
     try:
         response = requests.get(sitemap_url)
         if response.status_code == 200:
-            soup = BeautifulSoup(response.content, "xml")
+##soup = BeautifulSoup(response.content, "xml")
+            soup = BeautifulSoup(response.content, "html.parser")
+
             if soup.find_all("sitemap"):
                 for sitemap in soup.find_all("sitemap"):
                     sitemap_response = requests.get(sitemap.loc.text)

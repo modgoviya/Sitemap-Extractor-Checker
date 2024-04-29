@@ -5,6 +5,9 @@ import requests  # Use requests instead of aiohttp
 ##
 # Set page configuration with an SEO-optimized title and a brief, engaging description
 st.set_page_config(page_title="Advanced Sitemap URL Extractor", layout="wide")
+# Inject Google Search Console verification meta tag
+st.markdown('<meta name="google-site-verification" content="6PcU6Lc_3Ab2VoUBV1O6TxHVuhS1gmWpG1nUd8IFJnc" />', unsafe_allow_html=True)
+
 
 # Custom CSS for modern styling
 st.markdown("""
